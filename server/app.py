@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from server.config import Config
+from config import Config
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -32,7 +32,7 @@ def setup_logging(app):
     app.logger.info('Late Show API startup')
 
 def create_app():
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__)
     app.config.from_object(Config)
 
     db.init_app(app)
@@ -42,10 +42,10 @@ def create_app():
 
     setup_logging(app)
 
-    from server.controllers.auth_controller import auth_bp
-    from server.controllers.guest_controller import guest_bp
-    from server.controllers.episode_controller import episode_bp
-    from server.controllers.appearance_controller import appearance_bp
+    from .controllers.auth_controller import auth_bp
+    from .controllers.guest_controller import guest_bp
+    from .controllers.episode_controller import episode_bp
+    from .controllers.appearance_controller import appearance_bp
     
     limiter.limit("5 per minute")(auth_bp)
     limiter.limit("100 per minute")(guest_bp)
